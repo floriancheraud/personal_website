@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Florian Cheraud</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <style>
+        body {
+            transition: background-color 2s;
+            background-color: black;
+        }
+        .full-page-link {
+	        display: flex;
+	        height: 100%;
+	        width: 100%;
+	        position: fixed;
+	        top: 0;
+	        left: 0;
+	        background: transparent;
+        }
+    </style>
+</head>
+<body>
+	<a href="https://platform-0.com" class="full-page-link"></a>
+
+<script>
+	async function fetchSunTimes() {
+	    // Updated latitude and longitude for the specific location
+	    const response = await fetch('https://api.sunrise-sunset.org/json?lat=48.88590022167091&lng=2.3419662984925442&date=today&formatted=0');
+	    if (!response.ok) {
+	        throw new Error(`HTTP error! Status: ${response.status}`);
+	    }
+	    const data = await response.json();
+
+	    console.log("Sunrise-Sunset API Response:", JSON.stringify(data, null, 2)); // For debugging
+
+	    return {
+	        sunrise: new Date(data.results.sunrise),
+	        sunset: new Date(data.results.sunset)
+	    };
+	}
+
+	function getBackgroundColor(sunrise, sunset) {
+	    const now = new Date();
+	    const midnight = new Date(now);
+	    midnight.setHours(24, 0, 0, 0); // Set to next midnight to calculate the distance to the middle of the night
+	    const noon = new Date(now);
+	    noon.setHours(12, 0, 0, 0); // Set to midday for daylight calculation
+
+	    // Calculate time differences for color scaling
+	    const timeToNoon = Math.abs(now - noon);
+	    const timeToMidnight = Math.abs(now - midnight);
+	    const halfDay = 12 * 60 * 60 * 1000; // Half a day in milliseconds
+
+	    // Determine if it's day or night
+	    const isDaytime = now >= sunrise && now <= sunset;
+
+	    // Scale color based on proximity to noon or midnight
+	    let colorValue;
+	    if (isDaytime) {
+	        // Daytime logic: closer to noon, lighter the color
+	        colorValue = Math.floor((1 - timeToNoon / halfDay) * 255);
+	    } else {
+	        // Nighttime logic: closer to midnight, darker the color
+	        colorValue = Math.floor((timeToMidnight / halfDay) * 255);
+	    }
+
+	    return `rgb(${colorValue}, ${colorValue}, ${colorValue})`;
+	}
+
+	async function updateBackgroundColor() {
+	    try {
+	        const {sunrise, sunset} = await fetchSunTimes();
+	        const color = getBackgroundColor(sunrise, sunset);
+	        document.body.style.backgroundColor = color;
+	    } catch (error) {
+	        console.log(error);
+	        document.body.style.backgroundColor = 'rgb(0, 0, 0)'; // Fallback color
+	    }
+	}
+
+	updateBackgroundColor();
+</script>
+</body>
+</html>
