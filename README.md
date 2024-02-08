@@ -1,3 +1,3 @@
 # personal_website
 
-This website display a color depending on the position of the sun relative to Paris (where I work). It goes from 0,0,0 at the middle of the night to 255,255,255 at midday. It features a full page link to my blog, platform-0.com. 
+This website changes its background color based on the time of day in Paris, where I work. At midnight, the color is black (0,0,0), and at noon, it's white (255,255,255). There's also a full-page link to my blog, platform-0.com.
