@@ -5,11 +5,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Florian Cheraud</title>
     <link rel="icon" type="image/png" href="/favicon.png">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="https://necolas.github.io/normalize.css/8.0.1/normalize.css">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap" rel="stylesheet">
+
 </head>
 <body>
+	<div id="main">
+		<p><b>Florian Chéraud</b><br>Independent Architect & Researcher</p>
 	<a href="https://platform-0.com" class="full-page-link"></a>
-
+	</div>
 <script>
 	async function fetchSunTimes() {
 	    // Updated latitude and longitude for the specific location
@@ -60,13 +68,24 @@
 	        const {sunrise, sunset} = await fetchSunTimes();
 	        const color = getBackgroundColor(sunrise, sunset);
 	        document.body.style.backgroundColor = color;
+	        
+	        // Determine the appropriate text color based on background color
+	        const now = new Date();
+	        const isDaytime = now >= sunrise && now <= sunset;
+	        
+	        // Set text color: black for day, white for night
+	        document.getElementById('main').style.color = isDaytime ? 'black' : 'white';
 	    } catch (error) {
 	        console.log(error);
 	        document.body.style.backgroundColor = 'rgb(0, 0, 0)'; // Fallback color
+	        // Fallback text color
+	        document.getElementById('main').style.color = 'white';
 	    }
 	}
 
+
 	updateBackgroundColor();
 </script>
+
 </body>
 </html>
